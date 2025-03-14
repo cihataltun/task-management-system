@@ -13,6 +13,15 @@
             <label for="description">Açıklama</label>
             <textarea name="description" class="form-control"></textarea>
         </div>
+        <div class="form-group">
+            <label for="assigned_to">Görev Atanacak Kullanıcı</label>
+            <select name="assigned_to" class="form-control">
+                <option value="">-- Kendinize veya başka birini seçin --</option>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary mt-3">Oluştur</button>
     </form>
 </div>

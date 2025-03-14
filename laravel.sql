@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: mysql
--- Üretim Zamanı: 12 Mar 2025, 10:08:48
+-- Üretim Zamanı: 14 Mar 2025, 10:49:03
 -- Sunucu sürümü: 8.0.32
 -- PHP Sürümü: 8.2.8
 
@@ -150,8 +150,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('CkpJjieFClvuwfZBRbtdrLI0nTElziimn1j11skL', NULL, '192.168.65.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiT0U0YVBUakJMenBrWFF1NkNqVEJta0lvY0wwQnA3b2tEd0NudThFMCI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyMjoiaHR0cDovL2xvY2FsaG9zdC90YXNrcyI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjIyOiJodHRwOi8vbG9jYWxob3N0L2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1741774071),
-('YMXUmp1ETrc4tSdjVGRAwNMUI7AX2h3FGTYFcku9', 1, '192.168.65.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoibG15bUNQQVp2QXZOQU8xRjVXYmZBb3VRMlRidllpT28yR0NDcG5CQiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjIyOiJodHRwOi8vbG9jYWxob3N0L3Rhc2tzIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE3NDE3MDMwMjQ7fX0=', 1741703300);
+('cuLRtTECfrQGhkYUemUUkKtaNbJlM6s1eWzmC5iZ', 1, '192.168.65.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoia2R4Q1dJUGRJYmw2UW9xZnNFd0NrYkdyUDd1QllyV01SSXNlNWh1OCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjIyOiJodHRwOi8vbG9jYWxob3N0L3Rhc2tzIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE3NDE5NDkyNzc7fX0=', 1741949279);
 
 -- --------------------------------------------------------
 
@@ -162,6 +161,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 CREATE TABLE `tasks` (
   `id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
+  `assigned_to` bigint UNSIGNED DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
   `status` enum('pending','completed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
@@ -173,9 +173,11 @@ CREATE TABLE `tasks` (
 -- Tablo döküm verisi `tasks`
 --
 
-INSERT INTO `tasks` (`id`, `user_id`, `name`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Görev 1', 'açıklama 1', 'completed', '2025-03-11 14:19:08', '2025-03-11 14:19:19'),
-(2, 4, 'Görev 4', 'Açıklama 4', 'pending', '2025-03-11 14:19:58', '2025-03-11 14:19:58');
+INSERT INTO `tasks` (`id`, `user_id`, `assigned_to`, `name`, `description`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, 'Görev 1', 'Görev açıklamasıdır.\r\nGörev User 2\'ye atandı.', 'completed', '2025-03-14 10:38:39', '2025-03-14 10:40:01'),
+(2, 1, 5, 'Görev 2', 'Görev 2 açıklama', 'pending', '2025-03-14 10:45:29', '2025-03-14 10:45:29'),
+(3, 1, 5, 'Görev 3', 'Görev 3 açıklamasıdır.', 'pending', '2025-03-14 10:46:05', '2025-03-14 10:46:05'),
+(4, 5, 1, 'Görev 4', 'Görev 4 açıklamasıdır.\r\nAcil.', 'pending', '2025-03-14 10:47:36', '2025-03-14 10:47:36');
 
 -- --------------------------------------------------------
 
@@ -199,11 +201,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'User 1', 'user1@example.com', NULL, '$2y$12$R1IkE6Gqwq/7dmO9.FoF/uOC4sjZGr/QxaIDBD4lYhS3jflccfPWC', NULL, '2025-03-11 14:17:59', '2025-03-11 14:17:59'),
-(2, 'User 2', 'user2@example.com', NULL, '$2y$12$tzjQceCP.Mz6mlYoIcT8NOud1couTZd8oI1aRx16GTeSOg5y9PTd.', NULL, '2025-03-11 14:17:59', '2025-03-11 14:17:59'),
-(3, 'User 3', 'user3@example.com', NULL, '$2y$12$kLTbAa4o8rblrSPUGZSHDuB4DDVVKfLbo2C/Axlo/BIrqnSnbQ7mO', NULL, '2025-03-11 14:17:59', '2025-03-11 14:17:59'),
-(4, 'User 4', 'user4@example.com', NULL, '$2y$12$KEi/tSHi8/kjYCryoCoa..8SAMSniB7IwE728V.AnU079pqvRwNKu', NULL, '2025-03-11 14:17:59', '2025-03-11 14:17:59'),
-(5, 'User 5', 'user5@example.com', NULL, '$2y$12$z3iszPX0FvCoy7pxgD8qseocl6dvuh/gpGihv9gBH60HaMW752l92', NULL, '2025-03-11 14:18:00', '2025-03-11 14:18:00');
+(1, 'User 1', 'user1@example.com', NULL, '$2y$12$rgJduT8LmQams76ODYMKTOa3Jpc3Wst0KVzVqjbc4xDqU0uv7y2qW', NULL, '2025-03-14 10:37:43', '2025-03-14 10:37:43'),
+(2, 'User 2', 'user2@example.com', NULL, '$2y$12$OvRyaK/ZPbiLRiJRgvhmPeBnYzofgTmy6xe/GO.rUdQPieFQWat.W', NULL, '2025-03-14 10:37:43', '2025-03-14 10:37:43'),
+(3, 'User 3', 'user3@example.com', NULL, '$2y$12$SU.uYl8Ro97ukB135ZZZledrKKj7W8W1PHDQ1bno5oEm6.dJ9eNBO', NULL, '2025-03-14 10:37:43', '2025-03-14 10:37:43'),
+(4, 'User 4', 'user4@example.com', NULL, '$2y$12$xdxjDF9sIlZX/JWYtyCJu.g1trm3FP7c2A.gJddoJSr9AatlR.Xh.', NULL, '2025-03-14 10:37:43', '2025-03-14 10:37:43'),
+(5, 'User 5', 'user5@example.com', NULL, '$2y$12$dY1i/Sj.RNpgBbIBOH9Bj.WboDyjRjeDu9wMp8/Ah.ftZ6JKj2DAC', NULL, '2025-03-14 10:37:44', '2025-03-14 10:37:44');
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -266,7 +268,8 @@ ALTER TABLE `sessions`
 --
 ALTER TABLE `tasks`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `tasks_user_id_foreign` (`user_id`);
+  ADD KEY `tasks_user_id_foreign` (`user_id`),
+  ADD KEY `tasks_assigned_to_foreign` (`assigned_to`);
 
 --
 -- Tablo için indeksler `users`
@@ -301,7 +304,7 @@ ALTER TABLE `migrations`
 -- Tablo için AUTO_INCREMENT değeri `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `users`
@@ -317,6 +320,7 @@ ALTER TABLE `users`
 -- Tablo kısıtlamaları `tasks`
 --
 ALTER TABLE `tasks`
+  ADD CONSTRAINT `tasks_assigned_to_foreign` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `tasks_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 

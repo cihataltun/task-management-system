@@ -4,51 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    // Tüm görevleri listeler (sadece giriş yapmış kullanıcının görevleri)
+    // Kullanıcının oluşturduğu veya kendisine atanan tüm görevleri listeler
     public function index()
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        $tasks = Auth::user()->tasks()->latest()->get();
+        $userId = Auth::id();
+        $tasks = Task::where('user_id', $userId)
+                    ->orWhere('assigned_to', $userId)
+                    ->latest()
+                    ->get();
         return view('tasks.index', compact('tasks'));
     }
 
-
-    // Yeni görev oluşturma formunu gösterir
+    // Yeni görev oluşturma formunu gösterir (atanabilecek kullanıcı listesini da gönderiyoruz)
     public function create()
     {
-        return view('tasks.create');
+        $users = User::all();
+        return view('tasks.create', compact('users'));
     }
 
     // Yeni görevi veritabanına kaydeder
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255',
+            'name'         => 'required|max:255',
+            'assigned_to'  => 'nullable|exists:users,id',
         ]);
 
+        // Görevi oluşturan kullanıcı, logged-in user’dır.
         Auth::user()->tasks()->create([
-            'name' => $request->name,
-            'description' => $request->description,
+            'name'         => $request->name,
+            'description'  => $request->description,
+            'assigned_to'  => $request->assigned_to,
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Görev başarıyla oluşturuldu.');
     }
 
-    // Belirli görevin düzenleme formunu gösterir
+    // Belirli görevin düzenleme formunu gösterir (sadece görev yaratıcısına izin veriyoruz)
     public function edit(Task $task)
     {
-        // Yetkisiz erişimi engelle
         if ($task->user_id != Auth::id()) {
             abort(403);
         }
-        return view('tasks.edit', compact('task'));
+        $users = User::all();
+        return view('tasks.edit', compact('task', 'users'));
     }
 
     // Görevi günceller
@@ -59,18 +63,20 @@ class TaskController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|max:255',
+            'name'         => 'required|max:255',
+            'assigned_to'  => 'nullable|exists:users,id',
         ]);
 
         $task->update([
-            'name' => $request->name,
-            'description' => $request->description,
+            'name'         => $request->name,
+            'description'  => $request->description,
+            'assigned_to'  => $request->assigned_to,
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Görev güncellendi.');
     }
 
-    // Görevi siler
+    // Görevi siler (sadece yaratıcısına izin verilir)
     public function destroy(Task $task)
     {
         if ($task->user_id != Auth::id()) {
@@ -80,10 +86,11 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Görev silindi.');
     }
 
-    // Görevi tamamlanmış olarak işaretler
+    // Görevi tamamlanmış olarak işaretler (görev yaratıcısı veya atanan kullanıcı tamamlayabilir)
     public function complete(Task $task)
     {
-        if ($task->user_id != Auth::id()) {
+        $userId = Auth::id();
+        if ($task->user_id != $userId && $task->assigned_to != $userId) {
             abort(403);
         }
         $task->update(['status' => 'completed']);

@@ -9,11 +9,17 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'status', 'user_id'];
+    protected $fillable = ['name', 'description', 'status', 'user_id', 'assigned_to'];
 
-    // Her görev bir kullanıcıya aittir.
+    // Görevi oluşturan kullanıcı ilişkisi
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Görevin atandığı kullanıcı ilişkisi
+    public function assignedUser()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 }
